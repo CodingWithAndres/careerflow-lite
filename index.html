@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CareerFlow Lite</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <header>
+    <h1>CareerFlow Lite</h1>
+    <p>Track your job applications in one place</p>
+  </header>
+
+  <main>
+
+    <!-- Form -->
+    <section class="form-section">
+      <h2>Add Application</h2>
+      <form id="appForm">
+        <input type="text" id="company" placeholder="Company" required />
+        <input type="text" id="role" placeholder="Role" required />
+        <input type="date" id="date" required />
+        <select id="status">
+          <option value="Applied">Applied</option>
+          <option value="Interview">Interview</option>
+          <option value="Offer">Offer</option>
+          <option value="Rejected">Rejected</option>
+        </select>
+        <button type="submit">Add</button>
+      </form>
+    </section>
+
+    <!-- List -->
+    <section class="list-section">
+      <h2>Your Applications</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Company</th>
+            <th>Role</th>
+            <th>Date</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody id="appList"></tbody>
+      </table>
+    </section>
+
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
