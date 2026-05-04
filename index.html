@@ -15,62 +15,36 @@
 
   <main>
 
-    <!-- Dashboard -->
-    <section class="dashboard-section">
+    <section>
       <h2>Application Dashboard</h2>
-
       <div class="dashboard-grid">
-        <div class="stat-card">
-          <span>Total</span>
-          <strong id="total-count">0</strong>
-        </div>
-
-        <div class="stat-card">
-          <span>Applied</span>
-          <strong id="applied-count">0</strong>
-        </div>
-
-        <div class="stat-card">
-          <span>Interview</span>
-          <strong id="interview-count">0</strong>
-        </div>
-
-        <div class="stat-card">
-          <span>Offer</span>
-          <strong id="offer-count">0</strong>
-        </div>
-
-        <div class="stat-card">
-          <span>Rejected</span>
-          <strong id="rejected-count">0</strong>
-        </div>
+        <div class="stat-card"><span>Total</span><strong id="total-count">0</strong></div>
+        <div class="stat-card"><span>Applied</span><strong id="applied-count">0</strong></div>
+        <div class="stat-card"><span>Interview</span><strong id="interview-count">0</strong></div>
+        <div class="stat-card"><span>Offer</span><strong id="offer-count">0</strong></div>
+        <div class="stat-card"><span>Rejected</span><strong id="rejected-count">0</strong></div>
       </div>
     </section>
 
-    <!-- Form -->
-    <section class="form-section">
+    <section>
       <h2>Add Application</h2>
-
       <form id="appForm">
         <input type="text" id="company" placeholder="Company" required />
         <input type="text" id="role" placeholder="Role" required />
         <input type="date" id="date" required />
-
-        <select id="status" required>
+        <select id="status">
           <option value="Applied">Applied</option>
           <option value="Interview">Interview</option>
           <option value="Offer">Offer</option>
           <option value="Rejected">Rejected</option>
         </select>
-
-        <button type="submit">Add Application</button>
+        <button type="submit">Add</button>
       </form>
     </section>
 
-    <!-- Filters -->
-    <section class="filter-section">
-      <h2>Filter Applications</h2>
-
+    <section>
+      <h2>Filter & Search</h2>
+      <input id="searchInput" class="search-input" placeholder="Search..." />
       <div class="filter-buttons">
         <button class="filter-btn active" data-filter="All">All</button>
         <button class="filter-btn" data-filter="Applied">Applied</button>
@@ -80,16 +54,13 @@
       </div>
     </section>
 
-    <!-- List -->
-    <section class="list-section">
+    <section>
       <div class="section-header">
         <h2>Your Applications</h2>
         <button id="clearAllBtn" class="secondary-btn">Clear All</button>
       </div>
 
-      <p id="emptyMessage" class="empty-message">
-        No applications yet. Add your first job application above.
-      </p>
+      <p id="emptyMessage">No applications yet.</p>
 
       <table>
         <thead>
@@ -101,7 +72,6 @@
             <th>Action</th>
           </tr>
         </thead>
-
         <tbody id="appList"></tbody>
       </table>
     </section>
