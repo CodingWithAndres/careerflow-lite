@@ -41,7 +41,14 @@ function renderApps() {
         <td>${app.company}</td>
         <td>${app.role}</td>
         <td>${app.date}</td>
-        <td><span class="status-badge">${app.status}</span></td>
+        <td>
+          <select class="status-select" onchange="updateStatus(${originalIndex}, this.value)">
+            <option value="Applied" ${app.status === "Applied" ? "selected" : ""}>Applied</option>
+            <option value="Interview" ${app.status === "Interview" ? "selected" : ""}>Interview</option>
+            <option value="Offer" ${app.status === "Offer" ? "selected" : ""}>Offer</option>
+            <option value="Rejected" ${app.status === "Rejected" ? "selected" : ""}>Rejected</option>
+          </select>
+        </td>
         <td>
           <button class="delete-btn" onclick="deleteApp(${originalIndex})">
             Delete
@@ -54,6 +61,12 @@ function renderApps() {
   });
 
   updateDashboard();
+}
+
+function updateStatus(index, newStatus) {
+  applications[index].status = newStatus;
+  saveApps();
+  renderApps();
 }
 
 function deleteApp(index) {
