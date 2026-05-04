@@ -34,15 +34,15 @@ function renderApps() {
   emptyMessage.style.display = filteredApps.length === 0 ? "block" : "none";
 
   filteredApps.forEach((app) => {
-    const originalIndex = applications.indexOf(app);
+    const index = applications.indexOf(app);
 
     const row = `
       <tr>
-        <td>${app.company}</td>
-        <td>${app.role}</td>
-        <td>${app.date}</td>
+        <td><input value="${app.company}" id="company-${index}" /></td>
+        <td><input value="${app.role}" id="role-${index}" /></td>
+        <td><input type="date" value="${app.date}" id="date-${index}" /></td>
         <td>
-          <select class="status-select" onchange="updateStatus(${originalIndex}, this.value)">
+          <select onchange="updateStatus(${index}, this.value)">
             <option value="Applied" ${app.status === "Applied" ? "selected" : ""}>Applied</option>
             <option value="Interview" ${app.status === "Interview" ? "selected" : ""}>Interview</option>
             <option value="Offer" ${app.status === "Offer" ? "selected" : ""}>Offer</option>
@@ -50,9 +50,8 @@ function renderApps() {
           </select>
         </td>
         <td>
-          <button class="delete-btn" onclick="deleteApp(${originalIndex})">
-            Delete
-          </button>
+          <button onclick="saveEdit(${index})">Save</button>
+          <button class="delete-btn" onclick="deleteApp(${index})">Delete</button>
         </td>
       </tr>
     `;
@@ -61,6 +60,15 @@ function renderApps() {
   });
 
   updateDashboard();
+}
+
+function saveEdit(index) {
+  applications[index].company = document.getElementById(`company-${index}`).value;
+  applications[index].role = document.getElementById(`role-${index}`).value;
+  applications[index].date = document.getElementById(`date-${index}`).value;
+
+  saveApps();
+  renderApps();
 }
 
 function updateStatus(index, newStatus) {
