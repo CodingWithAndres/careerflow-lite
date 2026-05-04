@@ -207,3 +207,49 @@ th {
   border: 1px solid #ccc;
   background: #f7f7f7;
 }
+
+.app-row {
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.app-row:hover {
+  background: #fafafa;
+}
+
+.edit-input,
+.status-select {
+  width: 100%;
+  max-width: 180px;
+  padding: 8px 10px;
+  font-size: 14px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+
+.status-select {
+  border-radius: 999px;
+  background: #f7f7f7;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+button {
+  transition: background 0.2s ease, transform 0.15s ease;
+}
+
+button:hover {
+  transform: translateY(-1px);
+}
+
+.stat-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+}

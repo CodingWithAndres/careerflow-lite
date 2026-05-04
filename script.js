@@ -6,6 +6,7 @@ const filterButtons = document.querySelectorAll(".filter-btn");
 
 let applications = JSON.parse(localStorage.getItem("apps")) || [];
 let currentFilter = "All";
+let editingIndex = null;
 
 function saveApps() {
   localStorage.setItem("apps", JSON.stringify(applications));
@@ -35,22 +36,53 @@ function renderApps() {
 
   filteredApps.forEach((app) => {
     const index = applications.indexOf(app);
+    const isEditing = editingIndex === index;
 
     const row = `
-      <tr>
-        <td><input value="${app.company}" id="company-${index}" /></td>
-        <td><input value="${app.role}" id="role-${index}" /></td>
-        <td><input type="date" value="${app.date}" id="date-${index}" /></td>
+      <tr class="app-row">
         <td>
-          <select onchange="updateStatus(${index}, this.value)">
+          ${
+            isEditing
+              ? `<input class="edit-input" id="company-${index}" value="${app.company}" />`
+              : app.company
+          }
+        </td>
+
+        <td>
+          ${
+            isEditing
+              ? `<input class="edit-input" id="role-${index}" value="${app.role}" />`
+              : app.role
+          }
+        </td>
+
+        <td>
+          ${
+            isEditing
+              ? `<input class="edit-input" type="date" id="date-${index}" value="${app.date}" />`
+              : app.date
+          }
+        </td>
+
+        <td>
+          <select class="status-select" onchange="updateStatus(${index}, this.value)">
             <option value="Applied" ${app.status === "Applied" ? "selected" : ""}>Applied</option>
             <option value="Interview" ${app.status === "Interview" ? "selected" : ""}>Interview</option>
             <option value="Offer" ${app.status === "Offer" ? "selected" : ""}>Offer</option>
             <option value="Rejected" ${app.status === "Rejected" ? "selected" : ""}>Rejected</option>
           </select>
         </td>
-        <td>
-          <button onclick="saveEdit(${index})">Save</button>
+
+        <td class="action-buttons">
+          ${
+            isEditing
+              ? `
+                <button onclick="saveEdit(${index})">Save</button>
+                <button class="secondary-btn" onclick="cancelEdit()">Cancel</button>
+              `
+              : `<button onclick="startEdit(${index})">Edit</button>`
+          }
+
           <button class="delete-btn" onclick="deleteApp(${index})">Delete</button>
         </td>
       </tr>
@@ -62,11 +94,31 @@ function renderApps() {
   updateDashboard();
 }
 
-function saveEdit(index) {
-  applications[index].company = document.getElementById(`company-${index}`).value;
-  applications[index].role = document.getElementById(`role-${index}`).value;
-  applications[index].date = document.getElementById(`date-${index}`).value;
+function startEdit(index) {
+  editingIndex = index;
+  renderApps();
+}
 
+function cancelEdit() {
+  editingIndex = null;
+  renderApps();
+}
+
+function saveEdit(index) {
+  const updatedCompany = document.getElementById(`company-${index}`).value.trim();
+  const updatedRole = document.getElementById(`role-${index}`).value.trim();
+  const updatedDate = document.getElementById(`date-${index}`).value;
+
+  if (!updatedCompany || !updatedRole || !updatedDate) {
+    alert("Please complete all fields before saving.");
+    return;
+  }
+
+  applications[index].company = updatedCompany;
+  applications[index].role = updatedRole;
+  applications[index].date = updatedDate;
+
+  editingIndex = null;
   saveApps();
   renderApps();
 }
@@ -79,6 +131,11 @@ function updateStatus(index, newStatus) {
 
 function deleteApp(index) {
   applications.splice(index, 1);
+
+  if (editingIndex === index) {
+    editingIndex = null;
+  }
+
   saveApps();
   renderApps();
 }
@@ -106,12 +163,14 @@ filterButtons.forEach((button) => {
     button.classList.add("active");
 
     currentFilter = button.dataset.filter;
+    editingIndex = null;
     renderApps();
   });
 });
 
 clearAllBtn.addEventListener("click", () => {
   applications = [];
+  editingIndex = null;
   saveApps();
   renderApps();
 });
