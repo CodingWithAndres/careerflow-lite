@@ -139,7 +139,9 @@ function setFilter(filter) {
   editingIndex = null;
   renderApps();
 
-  document.querySelector(".list-section")?.scrollIntoView({
+  const applicationsSection = document.getElementById("applications");
+
+  applicationsSection.scrollIntoView({
     behavior: "smooth",
     block: "start"
   });
