@@ -3,6 +3,7 @@ const list = document.getElementById("appList");
 const emptyMessage = document.getElementById("emptyMessage");
 const clearAllBtn = document.getElementById("clearAllBtn");
 const filterButtons = document.querySelectorAll(".filter-btn");
+const statCards = document.querySelectorAll(".stat-card");
 const searchInput = document.getElementById("searchInput");
 
 let applications = JSON.parse(localStorage.getItem("apps")) || [];
@@ -10,11 +11,12 @@ let currentFilter = "All";
 let editingIndex = null;
 let searchQuery = "";
 
-// Format text (Title Case)
 function formatText(text) {
   return text
+    .trim()
     .toLowerCase()
     .split(" ")
+    .filter(word => word !== "")
     .map(word => word.charAt(0).toUpperCase() + word.slice(1))
     .join(" ");
 }
@@ -26,19 +28,29 @@ function saveApps() {
 function updateDashboard() {
   document.getElementById("total-count").textContent = applications.length;
   document.getElementById("applied-count").textContent =
-    applications.filter(a => a.status === "Applied").length;
+    applications.filter(app => app.status === "Applied").length;
   document.getElementById("interview-count").textContent =
-    applications.filter(a => a.status === "Interview").length;
+    applications.filter(app => app.status === "Interview").length;
   document.getElementById("offer-count").textContent =
-    applications.filter(a => a.status === "Offer").length;
+    applications.filter(app => app.status === "Offer").length;
   document.getElementById("rejected-count").textContent =
-    applications.filter(a => a.status === "Rejected").length;
+    applications.filter(app => app.status === "Rejected").length;
+}
+
+function updateActiveFilterUI() {
+  filterButtons.forEach(button => {
+    button.classList.toggle("active", button.dataset.filter === currentFilter);
+  });
+
+  statCards.forEach(card => {
+    card.classList.toggle("active", card.dataset.filter === currentFilter);
+  });
 }
 
 function renderApps() {
   list.innerHTML = "";
 
-  const filtered = applications.filter(app =>
+  const filteredApps = applications.filter(app =>
     (currentFilter === "All" || app.status === currentFilter) &&
     (
       app.company.toLowerCase().includes(searchQuery) ||
@@ -46,92 +58,154 @@ function renderApps() {
     )
   );
 
-  emptyMessage.style.display = filtered.length ? "none" : "block";
+  emptyMessage.style.display = filteredApps.length === 0 ? "block" : "none";
 
-  filtered.forEach(app => {
+  filteredApps.forEach((app) => {
     const index = applications.indexOf(app);
     const isEditing = editingIndex === index;
 
-    list.innerHTML += `
+    const row = `
       <tr class="app-row">
-        <td>${isEditing
-          ? `<input id="company-${index}" value="${app.company}" />`
-          : app.company}</td>
-
-        <td>${isEditing
-          ? `<input id="role-${index}" value="${app.role}" />`
-          : app.role}</td>
-
-        <td>${isEditing
-          ? `<input type="date" id="date-${index}" value="${app.date}" />`
-          : app.date}</td>
-
         <td>
-          ${isEditing
-            ? `<select id="status-${index}">
-                <option ${app.status==="Applied"?"selected":""}>Applied</option>
-                <option ${app.status==="Interview"?"selected":""}>Interview</option>
-                <option ${app.status==="Offer"?"selected":""}>Offer</option>
-                <option ${app.status==="Rejected"?"selected":""}>Rejected</option>
-              </select>`
-            : `<select onchange="updateStatus(${index}, this.value)">
-                <option ${app.status==="Applied"?"selected":""}>Applied</option>
-                <option ${app.status==="Interview"?"selected":""}>Interview</option>
-                <option ${app.status==="Offer"?"selected":""}>Offer</option>
-                <option ${app.status==="Rejected"?"selected":""}>Rejected</option>
-              </select>`
+          ${
+            isEditing
+              ? `<input class="edit-input" id="company-${index}" value="${app.company}" />`
+              : app.company
           }
         </td>
 
         <td>
-          ${isEditing
-            ? `<button onclick="saveEdit(${index})">Save</button>
-               <button onclick="cancelEdit()">Cancel</button>`
-            : `<button onclick="startEdit(${index})">Edit</button>`
+          ${
+            isEditing
+              ? `<input class="edit-input" id="role-${index}" value="${app.role}" />`
+              : app.role
           }
+        </td>
+
+        <td>
+          ${
+            isEditing
+              ? `<input class="edit-input" type="date" id="date-${index}" value="${app.date}" />`
+              : app.date
+          }
+        </td>
+
+        <td>
+          ${
+            isEditing
+              ? `
+                <select class="status-select" id="status-${index}">
+                  <option value="Applied" ${app.status === "Applied" ? "selected" : ""}>Applied</option>
+                  <option value="Interview" ${app.status === "Interview" ? "selected" : ""}>Interview</option>
+                  <option value="Offer" ${app.status === "Offer" ? "selected" : ""}>Offer</option>
+                  <option value="Rejected" ${app.status === "Rejected" ? "selected" : ""}>Rejected</option>
+                </select>
+              `
+              : `
+                <select class="status-select" onchange="updateStatus(${index}, this.value)">
+                  <option value="Applied" ${app.status === "Applied" ? "selected" : ""}>Applied</option>
+                  <option value="Interview" ${app.status === "Interview" ? "selected" : ""}>Interview</option>
+                  <option value="Offer" ${app.status === "Offer" ? "selected" : ""}>Offer</option>
+                  <option value="Rejected" ${app.status === "Rejected" ? "selected" : ""}>Rejected</option>
+                </select>
+              `
+          }
+        </td>
+
+        <td class="action-buttons">
+          ${
+            isEditing
+              ? `
+                <button onclick="saveEdit(${index})">Save</button>
+                <button class="secondary-btn" onclick="cancelEdit()">Cancel</button>
+              `
+              : `<button onclick="startEdit(${index})">Edit</button>`
+          }
+
           <button class="delete-btn" onclick="deleteApp(${index})">Delete</button>
         </td>
       </tr>
     `;
+
+    list.innerHTML += row;
   });
 
   updateDashboard();
+  updateActiveFilterUI();
 }
 
-function startEdit(i){ editingIndex = i; renderApps(); }
-function cancelEdit(){ editingIndex = null; renderApps(); }
+function setFilter(filter) {
+  currentFilter = filter;
+  editingIndex = null;
+  renderApps();
 
-function saveEdit(i){
-  applications[i].company = formatText(document.getElementById(`company-${i}`).value);
-  applications[i].role = formatText(document.getElementById(`role-${i}`).value);
-  applications[i].date = document.getElementById(`date-${i}`).value;
-  applications[i].status = document.getElementById(`status-${i}`).value;
+  document.querySelector(".list-section")?.scrollIntoView({
+    behavior: "smooth",
+    block: "start"
+  });
+}
+
+function startEdit(index) {
+  editingIndex = index;
+  renderApps();
+}
+
+function cancelEdit() {
+  editingIndex = null;
+  renderApps();
+}
+
+function saveEdit(index) {
+  const updatedCompany = document.getElementById(`company-${index}`).value;
+  const updatedRole = document.getElementById(`role-${index}`).value;
+  const updatedDate = document.getElementById(`date-${index}`).value;
+  const updatedStatus = document.getElementById(`status-${index}`).value;
+
+  if (!updatedCompany.trim() || !updatedRole.trim() || !updatedDate) {
+    alert("Please complete all fields before saving.");
+    return;
+  }
+
+  applications[index].company = formatText(updatedCompany);
+  applications[index].role = formatText(updatedRole);
+  applications[index].date = updatedDate;
+  applications[index].status = updatedStatus;
 
   editingIndex = null;
   saveApps();
   renderApps();
 }
 
-function updateStatus(i, val){
-  applications[i].status = val;
+function updateStatus(index, newStatus) {
+  applications[index].status = newStatus;
   saveApps();
   renderApps();
 }
 
-function deleteApp(i){
-  applications.splice(i,1);
+function deleteApp(index) {
+  applications.splice(index, 1);
+
+  if (editingIndex === index) {
+    editingIndex = null;
+  }
+
   saveApps();
   renderApps();
 }
 
-form.addEventListener("submit", e=>{
+form.addEventListener("submit", (e) => {
   e.preventDefault();
 
+  const company = document.getElementById("company").value;
+  const role = document.getElementById("role").value;
+  const date = document.getElementById("date").value;
+  const status = document.getElementById("status").value;
+
   applications.push({
-    company: formatText(document.getElementById("company").value),
-    role: formatText(document.getElementById("role").value),
-    date: document.getElementById("date").value,
-    status: document.getElementById("status").value
+    company: formatText(company),
+    role: formatText(role),
+    date,
+    status
   });
 
   form.reset();
@@ -139,24 +213,29 @@ form.addEventListener("submit", e=>{
   renderApps();
 });
 
-filterButtons.forEach(btn=>{
-  btn.onclick = ()=>{
-    filterButtons.forEach(b=>b.classList.remove("active"));
-    btn.classList.add("active");
-    currentFilter = btn.dataset.filter;
-    renderApps();
-  };
+filterButtons.forEach((button) => {
+  button.addEventListener("click", () => {
+    setFilter(button.dataset.filter);
+  });
 });
 
-searchInput.oninput = e=>{
-  searchQuery = e.target.value.toLowerCase();
-  renderApps();
-};
+statCards.forEach((card) => {
+  card.addEventListener("click", () => {
+    setFilter(card.dataset.filter);
+  });
+});
 
-clearAllBtn.onclick = ()=>{
+searchInput.addEventListener("input", (e) => {
+  searchQuery = e.target.value.toLowerCase();
+  editingIndex = null;
+  renderApps();
+});
+
+clearAllBtn.addEventListener("click", () => {
   applications = [];
+  editingIndex = null;
   saveApps();
   renderApps();
-};
+});
 
 renderApps();

@@ -17,34 +17,64 @@
 
     <section>
       <h2>Application Dashboard</h2>
+
       <div class="dashboard-grid">
-        <div class="stat-card"><span>Total</span><strong id="total-count">0</strong></div>
-        <div class="stat-card"><span>Applied</span><strong id="applied-count">0</strong></div>
-        <div class="stat-card"><span>Interview</span><strong id="interview-count">0</strong></div>
-        <div class="stat-card"><span>Offer</span><strong id="offer-count">0</strong></div>
-        <div class="stat-card"><span>Rejected</span><strong id="rejected-count">0</strong></div>
+        <button class="stat-card active" data-filter="All">
+          <span>Total</span>
+          <strong id="total-count">0</strong>
+        </button>
+
+        <button class="stat-card" data-filter="Applied">
+          <span>Applied</span>
+          <strong id="applied-count">0</strong>
+        </button>
+
+        <button class="stat-card" data-filter="Interview">
+          <span>Interview</span>
+          <strong id="interview-count">0</strong>
+        </button>
+
+        <button class="stat-card" data-filter="Offer">
+          <span>Offer</span>
+          <strong id="offer-count">0</strong>
+        </button>
+
+        <button class="stat-card" data-filter="Rejected">
+          <span>Rejected</span>
+          <strong id="rejected-count">0</strong>
+        </button>
       </div>
     </section>
 
     <section>
       <h2>Add Application</h2>
+
       <form id="appForm">
         <input type="text" id="company" placeholder="Company" required />
         <input type="text" id="role" placeholder="Role" required />
         <input type="date" id="date" required />
-        <select id="status">
+
+        <select id="status" required>
           <option value="Applied">Applied</option>
           <option value="Interview">Interview</option>
           <option value="Offer">Offer</option>
           <option value="Rejected">Rejected</option>
         </select>
-        <button type="submit">Add</button>
+
+        <button type="submit">Add Application</button>
       </form>
     </section>
 
     <section>
       <h2>Filter & Search</h2>
-      <input id="searchInput" class="search-input" placeholder="Search..." />
+
+      <input
+        type="text"
+        id="searchInput"
+        class="search-input"
+        placeholder="Search by company or role..."
+      />
+
       <div class="filter-buttons">
         <button class="filter-btn active" data-filter="All">All</button>
         <button class="filter-btn" data-filter="Applied">Applied</button>
@@ -60,7 +90,9 @@
         <button id="clearAllBtn" class="secondary-btn">Clear All</button>
       </div>
 
-      <p id="emptyMessage">No applications yet.</p>
+      <p id="emptyMessage" class="empty-message">
+        No applications found. Add an application or adjust your filters.
+      </p>
 
       <table>
         <thead>

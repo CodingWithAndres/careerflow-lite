@@ -38,16 +38,26 @@ section {
 
 .stat-card {
   background: #f7f7f7;
+  color: #222;
   border: 1px solid #ddd;
   border-radius: 10px;
   padding: 16px;
   text-align: center;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.stat-card:hover,
+.stat-card.active {
+  background: #111;
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
 }
 
 .stat-card span {
   display: block;
   font-size: 14px;
-  color: #555;
   margin-bottom: 8px;
 }
 
@@ -80,10 +90,18 @@ button {
   border: none;
   cursor: pointer;
   font-weight: 600;
+  transition: background 0.2s ease, transform 0.15s ease;
 }
 
 button:hover {
   background: #333;
+  transform: translateY(-1px);
+}
+
+.search-input {
+  width: 100%;
+  box-sizing: border-box;
+  margin-bottom: 14px;
 }
 
 .filter-buttons {
@@ -143,12 +161,33 @@ th {
   background: #f7f7f7;
 }
 
-.status-badge {
-  display: inline-block;
-  background: #eee;
-  border-radius: 999px;
-  padding: 6px 10px;
+.app-row {
+  transition: background 0.2s ease;
+}
+
+.app-row:hover {
+  background: #fafafa;
+}
+
+.edit-input,
+.status-select {
+  width: 100%;
+  max-width: 180px;
+  padding: 8px 10px;
   font-size: 14px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+
+.status-select {
+  border-radius: 999px;
+  background: #f7f7f7;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
 }
 
 .delete-btn {
@@ -198,72 +237,4 @@ th {
     overflow-x: auto;
     white-space: nowrap;
   }
-}
-
-.status-select {
-  padding: 8px 10px;
-  font-size: 14px;
-  border-radius: 999px;
-  border: 1px solid #ccc;
-  background: #f7f7f7;
-}
-
-.app-row {
-  transition: background 0.2s ease, transform 0.2s ease;
-}
-
-.app-row:hover {
-  background: #fafafa;
-}
-
-.edit-input,
-.status-select {
-  width: 100%;
-  max-width: 180px;
-  padding: 8px 10px;
-  font-size: 14px;
-  border-radius: 8px;
-  border: 1px solid #ccc;
-}
-
-.status-select {
-  border-radius: 999px;
-  background: #f7f7f7;
-}
-
-.action-buttons {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
-button {
-  transition: background 0.2s ease, transform 0.15s ease;
-}
-
-button:hover {
-  transform: translateY(-1px);
-}
-
-.stat-card {
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.stat-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
-}
-
-.search-input {
-  width: 100%;
-  margin-bottom: 10px;
-}
-
-.app-row:hover {
-  background: #fafafa;
-}
-
-.delete-btn {
-  background: red;
-  color: white;
 }
